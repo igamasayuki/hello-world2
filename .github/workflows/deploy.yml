@@ -42,9 +42,9 @@ jobs: # ワークフローで実行されるジョブ群
         jarFile=hello-project2.war
 
         # SCPでwarファイルをリモートサーバにコピー
-        scp -P $port -i ~/.ssh/id_rsa ./target/$jarFile $user@$host:$dest
+        scp -o StrictHostKeyChecking=no -P $port -i ~/.ssh/id_rsa ./target/$jarFile $user@$host:$dest
         # SSHでリモートサーバにログインしてコマンドを実行
-        ssh -p $port -i ~/.ssh/id_rsa $user@$host << EOF
+        ssh -o StrictHostKeyChecking=no -p $port -i ~/.ssh/id_rsa $user@$host << EOF
         sudo -i
         /usr/local/apache-tomcat-10.1.8/bin/startup.sh &
         cd /usr/local/apache-tomcat-10.1.8/webapps/
