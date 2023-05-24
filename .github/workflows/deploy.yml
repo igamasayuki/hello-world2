@@ -19,11 +19,6 @@ jobs: # ワークフローで実行されるジョブ群
         java-version: '17'
         distribution: 'adopt'
 
-#    - name: Set up SSH key
-#      uses: webfactory/ssh-agent@v0.5.3
-#      with:
-#        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
     - name: Build with Test # ビルドとテスト
       run: ./gradlew build # コマンドラインにてテストとビルドを実行
 
@@ -46,11 +41,10 @@ jobs: # ワークフローで実行されるジョブ群
         # SSHでリモートサーバにログインしてコマンドを実行
         ssh -o StrictHostKeyChecking=no -p $port -i ~/.ssh/id_rsa $user@$host << EOF
         sudo -i
-        /usr/local/apache-tomcat-10.1.8/bin/startup.sh &
+        /usr/local/apache-tomcat-10.1.8/bin/shutdown.sh
         cd /usr/local/apache-tomcat-10.1.8/webapps/
+        rm -rf *
         mv /home/centos/$warFile .
         chown root:root $warFile
-        /usr/local/apache-tomcat-10.1.8/bin/shutdown.sh
+        /usr/local/apache-tomcat-10.1.8/bin/startup.sh &
         EOF
-
-        # rsync -avz --delete -e "ssh -p $port" ./target/*.jar $user@$host:$dest
